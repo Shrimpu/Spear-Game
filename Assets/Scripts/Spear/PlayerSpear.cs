@@ -44,7 +44,7 @@ public class PlayerSpear : MonoBehaviour
                     float forceToAdd = ((heldSpear.stats.maxForce - heldSpear.stats.minForce) / heldSpear.stats.chargeTime) * Time.deltaTime;
                     Force += forceToAdd;
                 }
-                charge = Force / heldSpear.stats.maxForce;
+                charge = (Force - heldSpear.stats.minForce) / (heldSpear.stats.maxForce - heldSpear.stats.minForce);
 
                 chargedPos = Vector3.back * retractionDistance;
                 heldSpear.transform.localPosition = Vector3.Lerp(Vector3.zero, chargedPos, charge);
@@ -68,8 +68,8 @@ public class PlayerSpear : MonoBehaviour
             heldSpear = spear;
             spear.transform.parent = spearHolder;
             spear.transform.localPosition = Vector3.zero;
-            if (PickedUp != null)
-                PickedUp.Invoke(spear);
+
+            PickedUp?.Invoke(spear);
         }
     }
 

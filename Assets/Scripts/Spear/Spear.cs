@@ -8,7 +8,7 @@ public class Spear : MonoBehaviour
 {
     public SpearStats stats;
 
-    Rigidbody rb;
+    protected Rigidbody rb;
 
     protected virtual void Start()
     {
@@ -17,7 +17,7 @@ public class Spear : MonoBehaviour
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Player"))
+        if (!other.CompareTag("Player") && !other.CompareTag("Button"))
         {
             if (rb == null)
             {
@@ -25,9 +25,24 @@ public class Spear : MonoBehaviour
             }
             rb.isKinematic = true;
         }
-        else
+        else if (other.CompareTag("Player"))
         {
             other.GetComponent<PlayerSpear>().PickUp(this);
+        }
+    }
+
+    protected virtual void OnTriggerStay(Collider other)
+    {
+        if (!rb.isKinematic)
+        {
+            if (!other.CompareTag("Player") && !other.CompareTag("Button"))
+            {
+                if (rb == null)
+                {
+                    rb = GetComponent<Rigidbody>();
+                }
+                rb.isKinematic = true;
+            }
         }
     }
 }

@@ -5,8 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class LookAtMouse : MonoBehaviour
 {
+    public bool look = true;
     float camRayLength = 100f;
-    float planeDistanceFromCameraY = 10f;
+    float planeDistanceFromCameraY = 13.5f;
     Vector3 planePos;
     Transform mainCam;
 
@@ -26,7 +27,8 @@ public class LookAtMouse : MonoBehaviour
 
     void LateUpdate()
     {
-        Turn();
+        if (look)
+            Turn();
     }
 
     void Turn()
@@ -36,12 +38,12 @@ public class LookAtMouse : MonoBehaviour
         if (raycastPlane.Raycast(camRay, out float enter))
         {
             Vector3 hitPoint = camRay.GetPoint(enter);
-            Vector3 playerToMouse = hitPoint - transform.position;
+            Vector3 direction = hitPoint - transform.position;
             Debug.DrawLine(transform.position, hitPoint, Color.red);
 
-            playerToMouse.y = 0f;
+            direction.y = 0f;
 
-            Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
+            Quaternion newRotation = Quaternion.LookRotation(direction);
 
             rb.MoveRotation(newRotation);
         }

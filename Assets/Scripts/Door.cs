@@ -8,16 +8,21 @@ public class Door : MonoBehaviour
     enum States { closed, opening, open, closing }
     States doorState = new States();
 
+    public int inputsRequired = 1;
+    [Space]
     public float openAngle = 70f;
     [Range(0.1f, 2f)]
     public float openTime = 0.5f;
     [Range(0.1f, 2f)]
     public float closeTime = 0.5f;
     float startAngle = 0f;
+    float inputsActive;
+
     [HideInInspector]
     public bool closeDoorWhenAvailable;
 
     [Space]
+    public bool haxMode;
     [SerializeField]
     bool openFromLeft;
     [SerializeField]
@@ -39,12 +44,21 @@ public class Door : MonoBehaviour
             doorState = States.closed;
     }
 
-    private void OnMouseDown()
+    public void AddActiveInput()
     {
-        ToggleDoor();
+        inputsActive++;
+        if (inputsActive == inputsRequired)
+            ToggleDoor();
     }
 
-    public void ToggleDoor()
+    public void SubtractActiveInput()
+    {
+        inputsActive--;
+        if (inputsActive == inputsRequired - 1)
+            ToggleDoor();
+    }
+
+    void ToggleDoor()
     {
         if (doorState == States.closed)
         {
@@ -118,6 +132,12 @@ public class Door : MonoBehaviour
         hinge.x *= boxColl.size.x * (openFromLeft ? 0 : 1); hinge.z *= boxColl.size.x * (openFromLeft ? 0 : 1);
         hinge.x += transform.position.x; hinge.z += transform.position.z;
         return hinge;
+    }
+
+    private void OnMouseDown()
+    {
+        if (haxMode)
+            ToggleDoor();
     }
 
     private void OnDrawGizmosSelected()

@@ -316,8 +316,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   requiredWeight: 1
+  pushMagnitude: 0.25
+  pressTime: 0.1
+  releaseTime: 0.2
   linkedDoors:
   - {fileID: 0}
+  haxMode: 0
+  wireOn: {fileID: 2100000, guid: 6e9280a7238c80543ab800cd8e7c8a8b, type: 2}
+  wireOff: {fileID: 2100000, guid: 01caa12faae8d6b459fc70f4cc431ce0, type: 2}
 --- !u!65 &4074323295593698745
 BoxCollider:
   m_ObjectHideFlags: 0
