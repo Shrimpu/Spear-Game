@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4074323295593698745}
   m_Layer: 0
   m_Name: Button
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -322,6 +322,7 @@ MonoBehaviour:
   linkedDoors:
   - {fileID: 0}
   haxMode: 0
+  wireHolder: {fileID: 0}
   wireOn: {fileID: 2100000, guid: 6e9280a7238c80543ab800cd8e7c8a8b, type: 2}
   wireOff: {fileID: 2100000, guid: 01caa12faae8d6b459fc70f4cc431ce0, type: 2}
 --- !u!65 &4074323295593698745

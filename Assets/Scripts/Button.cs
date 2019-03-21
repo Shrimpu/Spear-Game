@@ -31,10 +31,12 @@ public class Button : MonoBehaviour
         buttonState = States.released;
         buttonRequest = Requests.nothing;
         if (wireHolder != null)
-            wire = wireHolder.GetComponentsInChildren<MeshRenderer>();
-        for (int i = 1; i < wire.Length; i++)
         {
-            wire[i].material = wireOff;
+            wire = wireHolder.GetComponentsInChildren<MeshRenderer>();
+            for (int i = 0; i < wire.Length; i++)
+            {
+                wire[i].material = wireOff;
+            }
         }
     }
 
@@ -101,29 +103,35 @@ public class Button : MonoBehaviour
         }
     }
 
-    void Activate()
+    protected virtual void Activate()
     {
-        for (int i = 1; i < wire.Length; i++)
+        if (wire != null)
         {
-            wire[i].material = wireOn;
+            for (int i = 0; i < wire.Length; i++)
+            {
+                wire[i].material = wireOn;
+            }
         }
 
         for (int i = 0; i < linkedDoors.Length; i++)
         {
-            linkedDoors[i].AddActiveInput();
+            linkedDoors[i].AddActiveInput(this);
         }
     }
 
     void Deactivate()
     {
-        for (int i = 1; i < wire.Length; i++)
+        if (wire != null)
         {
-            wire[i].material = wireOff;
+            for (int i = 0; i < wire.Length; i++)
+            {
+                wire[i].material = wireOff;
+            }
         }
 
         for (int i = 0; i < linkedDoors.Length; i++)
         {
-            linkedDoors[i].SubtractActiveInput();
+            linkedDoors[i].SubtractActiveInput(this);
         }
     }
 

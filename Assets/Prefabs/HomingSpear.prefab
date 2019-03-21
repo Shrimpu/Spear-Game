@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6877117379956623087}
   - component: {fileID: 3363245919080745756}
   - component: {fileID: 9200003462272654006}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HomingSpear
   m_TagString: Untagged
   m_Icon: {fileID: 0}

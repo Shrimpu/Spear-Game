@@ -6,7 +6,10 @@ using UnityEngine;
 public class Door : MonoBehaviour
 {
     enum States { closed, opening, open, closing }
+    enum Requests { open, close, nothing }
+
     States doorState = new States();
+    Requests request = new Requests();
 
     public int inputsRequired = 1;
     [Space]
@@ -18,9 +21,6 @@ public class Door : MonoBehaviour
     float startAngle = 0f;
     float inputsActive;
 
-    [HideInInspector]
-    public bool closeDoorWhenAvailable;
-
     [Space]
     public bool haxMode;
     [SerializeField]
@@ -28,11 +28,12 @@ public class Door : MonoBehaviour
     [SerializeField]
     bool startOpen;
 
+    List<Button> buttonsInContact = new List<Button>();
     BoxCollider boxColl;
     Vector3 startPos;
     Vector2 hinge;
 
-    private void Awake()
+    private void Start()
     {
         boxColl = GetComponent<BoxCollider>();
         startAngle = transform.rotation.y;
@@ -42,38 +43,56 @@ public class Door : MonoBehaviour
             doorState = States.open;
         else
             doorState = States.closed;
+
+        request = Requests.nothing;
     }
 
-    public void AddActiveInput()
+    public void AddActiveInput(Button button)
     {
-        inputsActive++;
-        if (inputsActive == inputsRequired)
-            ToggleDoor();
-    }
-
-    public void SubtractActiveInput()
-    {
-        inputsActive--;
-        if (inputsActive == inputsRequired - 1)
-            ToggleDoor();
-    }
-
-    void ToggleDoor()
-    {
-        if (doorState == States.closed)
+        if (!buttonsInContact.Contains(button))
         {
-            doorState = States.opening;
+            buttonsInContact.Add(button);
+            print(buttonsInContact.Count);
+            if (buttonsInContact.Count == inputsRequired)
+            {
+                ToggleDoor(Requests.open);
+            }
+        }
+    }
+
+    public void SubtractActiveInput(Button button)
+    {
+        if (buttonsInContact.Contains(button))
+        {
+            buttonsInContact.Remove(button);
+            print(buttonsInContact.Count);
+            if (buttonsInContact.Count == inputsRequired - 1)
+            {
+                ToggleDoor(Requests.close);
+            }
+        }
+    }
+
+    void ToggleDoor(Requests req)
+    {
+        if (doorState == States.closed && req == Requests.open)
+        {
             StartCoroutine(OpenDoor());
         }
-        else if (doorState == States.open)
+        else if (doorState == States.open && req == Requests.close)
         {
-            doorState = States.closing;
             StartCoroutine(CloseDoor());
         }
-        else if (doorState == States.opening)
+        else if (doorState == States.opening && req == Requests.close)
         {
-            closeDoorWhenAvailable = true;
+            request = Requests.close;
         }
+        else if (doorState == States.closing && req == Requests.open)
+        {
+            request = Requests.open;
+        }
+        else
+            request = Requests.nothing;
     }
 
     public float GetOpenAngle()
@@ -99,9 +118,9 @@ public class Door : MonoBehaviour
         }
         transform.RotateAround(HingeLocation(), Vector3.up, desiredAngle - degRotated);
         doorState = States.open;
-        if (closeDoorWhenAvailable)
+        if (request == Requests.close)
         {
-            closeDoorWhenAvailable = false;
+            request = Requests.nothing;
             StartCoroutine(CloseDoor());
         }
     }
@@ -123,6 +142,11 @@ public class Door : MonoBehaviour
         }
         transform.RotateAround(HingeLocation(), Vector3.up, desiredAngle - degRotated);
         doorState = States.closed;
+        if (request == Requests.open)
+        {
+            request = Requests.nothing;
+            StartCoroutine(OpenDoor());
+        }
     }
 
     Vector3 HingeLocation()
@@ -137,7 +161,13 @@ public class Door : MonoBehaviour
     private void OnMouseDown()
     {
         if (haxMode)
-            ToggleDoor();
+            ToggleDoor(Requests.open);
+    }
+
+    private void OnMouseUp()
+    {
+        if (haxMode)
+            ToggleDoor(Requests.close);
     }
 
     private void OnDrawGizmosSelected()

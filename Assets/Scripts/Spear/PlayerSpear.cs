@@ -61,7 +61,7 @@ public class PlayerSpear : MonoBehaviour
         }
     }
 
-    public void PickUp(Spear spear)
+    public bool PickUp(Spear spear)
     {
         if (heldSpear == null)
         {
@@ -70,7 +70,10 @@ public class PlayerSpear : MonoBehaviour
             spear.transform.localPosition = Vector3.zero;
 
             PickedUp?.Invoke(spear);
+            return true;
         }
+        else
+            return false;
     }
 
     private void LateUpdate()

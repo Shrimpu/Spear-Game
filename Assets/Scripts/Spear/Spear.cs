@@ -17,32 +17,18 @@ public class Spear : MonoBehaviour
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Player") && !other.CompareTag("Button"))
+        if (rb == null)
         {
-            if (rb == null)
-            {
-                rb = GetComponent<Rigidbody>();
-            }
-            rb.isKinematic = true;
+            rb = GetComponent<Rigidbody>();
         }
-        else if (other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
             other.GetComponent<PlayerSpear>().PickUp(this);
         }
-    }
-
-    protected virtual void OnTriggerStay(Collider other)
-    {
-        if (!rb.isKinematic)
+        else if (!rb.isKinematic && !other.CompareTag("Button"))
         {
-            if (!other.CompareTag("Player") && !other.CompareTag("Button"))
-            {
-                if (rb == null)
-                {
-                    rb = GetComponent<Rigidbody>();
-                }
-                rb.isKinematic = true;
-            }
+            transform.parent = other.transform;
+            rb.isKinematic = true;
         }
     }
 }
